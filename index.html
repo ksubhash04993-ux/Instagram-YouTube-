@@ -1,0 +1,47 @@
+<input type="text" id="url-input" placeholder="Enter YouTube/Instagram URL">
+<select id="quality">
+    <option value="best">Best</option>
+    <option value="720">720p</option>
+    <option value="360">360p</option>
+</select>
+<label><input type="checkbox" id="mp3"> MP3</label>
+<button id="download-btn">Download</button>
+
+<div id="loading" style="display:none; text-align:center; margin-top:10px;">
+    <img src="https://i.gifer.com/ZZ5H.gif" width="50">
+    <p>Downloading...</p>
+</div>
+
+<script>
+document.getElementById("download-btn").addEventListener("click", () => {
+    const url = document.getElementById("url-input").value;
+    const quality = document.getElementById("quality").value;
+    const mp3 = document.getElementById("mp3").checked;
+
+    if(!url) { alert("Enter URL!"); return; }
+
+    document.getElementById("loading").style.display = "block";
+
+    fetch("https://subhashcybersecurity-video-downloader-2.onrender.com/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url, quality, mp3 })
+    })
+    .then(response => {
+        if(!response.ok) throw new Error("Download failed");
+        return response.blob();
+    })
+    .then(blob => {
+        document.getElementById("loading").style.display = "none";
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = mp3 ? "audio.mp3" : "video.mp4";
+        a.click();
+    })
+    .catch(err => {
+        document.getElementById("loading").style.display = "none";
+        alert(err);
+    });
+});
+</script>
