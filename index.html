@@ -1,15 +1,133 @@
-<input type="text" id="url-input" placeholder="Enter YouTube/Instagram URL">
-<select id="quality">
-    <option value="best">Best</option>
-    <option value="720">720p</option>
-    <option value="360">360p</option>
-</select>
-<label><input type="checkbox" id="mp3"> MP3</label>
-<button id="download-btn">Download</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SubhashCyberSecurity Downloader</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f5f5f5;
+}
 
-<div id="loading" style="display:none; text-align:center; margin-top:10px;">
-    <img src="https://i.gifer.com/ZZ5H.gif" width="50">
-    <p>Downloading...</p>
+header {
+    background: linear-gradient(to right, #00b894, #0984e3);
+    color: white;
+    padding: 20px 0;
+    font-size: 26px;
+    font-weight: bold;
+    text-align: center;
+}
+
+header i {
+    margin-left: 15px;
+    color: #fff;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+input[type="text"], select, button, label {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+input[type="text"] {
+    flex: 1 1 100%;
+    min-width: 200px;
+}
+
+select, label, button {
+    flex: 1 1 auto;
+}
+
+button {
+    background: linear-gradient(to right, #00b894, #0984e3);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+#loading {
+    display: none;
+    margin-top: 15px;
+    text-align: center;
+}
+
+#download-area {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.download-btn {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    background: linear-gradient(to right, #00b894, #0984e3);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+}
+
+.download-btn:hover {
+    opacity: 0.85;
+}
+</style>
+</head>
+<body>
+
+<header>
+    SubhashCyberSecurity
+    <i class="fab fa-youtube"></i>
+    <i class="fab fa-instagram"></i>
+</header>
+
+<div class="container">
+    <div class="controls">
+        <input type="text" id="url-input" placeholder="Enter YouTube/Instagram URL">
+        <select id="quality">
+            <option value="best">Best</option>
+            <option value="720">720p</option>
+            <option value="360">360p</option>
+        </select>
+        <label><input type="checkbox" id="mp3"> MP3</label>
+        <button id="download-btn">Download</button>
+    </div>
+
+    <div id="loading">
+        <img src="https://i.gifer.com/ZZ5H.gif" width="50" alt="Loading...">
+        <p>Downloading...</p>
+    </div>
+
+    <div id="download-area"></div>
 </div>
 
 <script>
@@ -21,6 +139,7 @@ document.getElementById("download-btn").addEventListener("click", () => {
     if(!url) { alert("Enter URL!"); return; }
 
     document.getElementById("loading").style.display = "block";
+    document.getElementById("download-area").innerHTML = "";
 
     fetch("https://subhashcybersecurity-video-downloader-2.onrender.com/download", {
         method: "POST",
@@ -33,15 +152,22 @@ document.getElementById("download-btn").addEventListener("click", () => {
     })
     .then(blob => {
         document.getElementById("loading").style.display = "none";
+
         const downloadUrl = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = downloadUrl;
         a.download = mp3 ? "audio.mp3" : "video.mp4";
-        a.click();
+        a.textContent = mp3 ? "Download Audio" : "Download Video";
+        a.className = "download-btn";
+
+        document.getElementById("download-area").appendChild(a);
     })
     .catch(err => {
         document.getElementById("loading").style.display = "none";
-        alert(err);
+        document.getElementById("download-area").textContent = "Error: " + err;
     });
 });
 </script>
+
+</body>
+</html>
